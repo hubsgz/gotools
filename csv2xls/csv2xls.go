@@ -11,6 +11,11 @@ import (
 	"os"
 )
 
+/**
+ *  csv转excel工具
+ *	功能: 执行后会把当前目录下所有的*.csv文件转换成*.csv.xls文件
+*/
+
 func transFile(csvPath string) {
 	//csvPath := "111.csv"
 	csvfile,err := os.Open(csvPath)
