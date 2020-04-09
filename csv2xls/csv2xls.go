@@ -1,21 +1,51 @@
 package main
 
 import (
+	"encoding/csv"
 	"fmt"
 	"github.com/tealeg/xlsx"
-	"encoding/csv"
+	"io"
 	"io/ioutil"
 	"log"
-	"strings"
-	"io"
 	"os"
+	"strings"
 )
 
 /**
  *  csv转excel工具
- *	功能: 执行后会把当前目录下所有的*.csv文件转换成*.csv.xls文件
+ *	功能: 执行后会把当前目录下所有的*.csv文件转换成*.csv.xlsx文件
 */
+func main() {
 
+	dirPth := "."
+	dir, err := ioutil.ReadDir(dirPth)
+	if err != nil {
+		log.Fatal("Error when ReadDir:", err)
+	}
+	suffix := "CSV"
+	//PthSep := string(os.PathSeparator)
+	files := make([]string, 0, 10)
+	for _, fi := range dir {
+		if fi.IsDir() { // 忽略目录
+			continue
+		}
+		if strings.HasSuffix(strings.ToUpper(fi.Name()), suffix) { //匹配文件
+			files = append(files, fi.Name())
+		}
+	}
+	//fmt.Println(files)
+
+	for _,csvPath := range files {
+		transFile(csvPath)
+	}
+
+	var in string
+	fmt.Printf("按回车退出: ")
+	fmt.Scanln(&in)
+	fmt.Printf("%s\n", in)
+}
+
+//转换单个文件
 func transFile(csvPath string) {
 	//csvPath := "111.csv"
 	csvfile,err := os.Open(csvPath)
@@ -65,32 +95,3 @@ func transFile(csvPath string) {
 	}
 }
 
-func main() {
-
-	dirPth := "."
-	dir, err := ioutil.ReadDir(dirPth)
-	if err != nil {
-		log.Fatal("Error when ReadDir:", err)
-	}
-	suffix := "CSV"
-	//PthSep := string(os.PathSeparator)
-	files := make([]string, 0, 10)
-	for _, fi := range dir {
-		if fi.IsDir() { // 忽略目录
-			continue
-		}
-		if strings.HasSuffix(strings.ToUpper(fi.Name()), suffix) { //匹配文件
-			files = append(files, fi.Name())
-		}
-	}
-	//fmt.Println(files)
-
-	for _,csvPath := range files {
-		transFile(csvPath)
-	}
-
-	var in string
-	fmt.Printf("按回车退出: ")
-	fmt.Scanln(&in)
-	fmt.Printf("%s\n", in)
-}
