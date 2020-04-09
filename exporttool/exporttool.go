@@ -18,7 +18,7 @@ import (
  *	功能: 可通过配置sql语句导出大批量的数据,避免直接执行sql导出可能导致数据库负载高的问题
  *  用法参数:
       ./exporttool -d directory [-s size]
- *    -d  配置目录, 必传, 该目录必须有以下三个文件
+ *    -d  配置目录, 非必传, 默认为当前目录, 该目录必须有以下三个文件
 			dsn.conf  配置数据库连接
 			count.sql 统计总数据量sql
 			list.sql  导出数据列表sql
@@ -30,10 +30,10 @@ var cfgdir string
 var size int64
 
 func main()  {
-	flag.StringVar(&cfgdir, "d", "", "config dir")
-	flag.Int64Var(&size, "s", 10, "page size")
+	flag.StringVar(&cfgdir, "d", ".", "config dir")  //默认当前目录
+	flag.Int64Var(&size, "s", 10, "page size")       //默认每次查询10条记录
 	flag.Parse()
-	log.Println(cfgdir)
+	log.Println("use cfgdir ", cfgdir)
 
 	sqlfile := fmt.Sprintf("%s%slist.sql", cfgdir, string(os.PathSeparator))
 	sqlfile_count := fmt.Sprintf("%s%scount.sql", cfgdir, string(os.PathSeparator))
@@ -131,6 +131,11 @@ func main()  {
 
 	w.Flush()
 	log.Println("all finish")
+
+	var in string
+	fmt.Printf("按回车退出: ")
+	fmt.Scanln(&in)
+	fmt.Printf("%s\n", in)
 }
 
 func initdb(dbfile string) *sql.DB {
