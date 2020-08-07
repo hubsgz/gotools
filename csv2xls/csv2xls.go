@@ -33,9 +33,10 @@ func main() {
 			files = append(files, fi.Name())
 		}
 	}
-	//fmt.Println(files)
+	fmt.Println(files)
 
 	for _,csvPath := range files {
+		log.Println("start", csvPath)
 		transFile(csvPath)
 	}
 
@@ -71,7 +72,7 @@ func transFile(csvPath string) {
 			break
 		}
 		if err != nil {
-			log.Fatal(err)
+			log.Fatal("read line error => ", err)
 		}
 		//fmt.Println(record)
 		row = sheet.AddRow()
@@ -89,7 +90,7 @@ func transFile(csvPath string) {
 
 	err = file.Save(fmt.Sprintf("%s.xlsx", csvPath))
 	if err != nil {
-		fmt.Printf(err.Error())
+		fmt.Printf("save file err:", err.Error())
 	} else {
 		fmt.Println(fmt.Sprintf("%s.xlsx 转换成功", csvPath))
 	}
